@@ -1,0 +1,6 @@
+@media screen and (max-width:480px) {
+h1{text-align: center; color: blue; background-color: azure;}
+}
+@media screen and (min-width:481px) {
+  h1{color: red; background-color: yellow}
+}

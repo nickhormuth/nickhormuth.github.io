@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Working with background</title>
+  <meta name="description" content="working with background images and color in CNIT 132">
+
+  <style>
+    body {
+
+      background-image: url(trilliumfoot.gif);
+      background-repeat: repeat-y;
+      background-size: contain;
+      /*height: 76px; */
+      background-position: top right;
+      /*background-attachment: fixed;*/
+      background-color: lightgreen;
+      /*background-image:url(gallery/photo1.jpg);
+background-size:cover;*/
+      background-blend-mode: overlay;
+    }
+
+    h1 {
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-decoration: underline overline;
+      line-height: 2.0;
+      text-align: center;
+
+      /*font-style: italic;*/
+    }
+
+    nav {
+      text-align: center;
+    }
+
+    nav ul {
+      list-style-type: none;
+      padding-left: 0;
+
+
+
+    }
+
+    nav ul li {
+      display: inline-block;
+
+      background-color: yellow;
+      width: 200px;
+      border: 1px solid red;
+      text-align: center;
+      padding: 10px;
+      text-transform: uppercase;
+    }
+
+    nav a {
+      text-decoration: none;
+    }
+
+    h2 {
+      background-image: url(trilliumfoot.gif);
+      background-repeat: no-repeat;
+      height: 76px;
+      line-height: 76px;
+      /* trick is to make line height same as element */
+      background-position: left;
+      /*padding-left: 116px;*/
+      background-color: yellow;
+      text-align: center;
+      background-blend-mode: darken;
+      border: 1px solid red;
+    }
+
+    section {
+      background-image: url(oldboat.gif);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <ul>
+      <li>Home</li>
+      <li>Contact Us</li>
+      <li>Services</li>
+    </ul>
+  </nav>
+  <div id="main">
+    <h1>Background Images and Color</h1>
+    <p>We will be using this page to test and work with different background-image properties as well as background-color</p>
+    <p>This page will act as a playground so we can see how to work with those</p>
+  </div>
+  <h2>Outside the div</h2>
+  <p>This is just an extra content to be outside the div created above</p>
+
+  <section>
+    <h3>section heading</h3>
+    <p>paragraph for the section</p>
+    <p>second paragraph for the section</p>
+  </section>
+</body>
+
+</html>
