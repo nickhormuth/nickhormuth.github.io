@@ -1,0 +1,65 @@
+body {
+  background-color: yellow;
+}
+a {
+  color: blue;
+}
+
+a-visited {
+  color: white;
+
+}
+
+h1 {
+  text-align: center;
+  color: red;
+}
+
+h2 {
+  text-align: right;
+  color: blue;
+  font-size: 1.5em;
+  font-style: italic;
+  /*display: inline; */
+
+}
+
+h3 {
+  text-align: right;
+  color: red;
+}
+
+
+p::first-letter {
+  font-size: 2.5rem;
+  font-style: italic;
+  font-weight: bold;
+  display: inline;
+
+
+
+
+}
+
+@keyframes tableanimation {
+  from {background-color: cyan; color: black}
+  to {background-color:green; color: white}
+}
+
+table {
+background-color: cyan;
+color: black;
+border-spacing: 10px;
+animation-name: tableanimation;
+animation-duration: 5s;
+animation-fill-mode: forwards;
+}
+
+td:first-child {
+  text-align: center;
+  font-weight: bold;
+}
+
+td {
+  padding: 10px;
+}
