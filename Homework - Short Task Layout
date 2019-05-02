@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Short Task Homework due 4.17.19</title>
+    <style>
+#header {background-color: #C2C2C2}
+#footer {background-color: #C2C2C2}
+    </style>
+  </head>
+  <body>
+<div class="wrapper">
+  <div class="header">
+    <h1>Dandyhorse SF Bike Tours</h1>
+  </div>
+<div class="menu">
+
+</div>
+<div class="content">
+
+</div>
+<div class="footer">
+Copyright &copy;2019
+</div>
+</div>
+
+  </body>
+</html>
