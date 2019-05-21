@@ -1,0 +1,55 @@
+body {
+  color: dark-grey;
+  background: linear-gradient(#E7D87F,#E2BD7F);
+  font-family: 'Roboto', Helvetica, sans-serif;
+}
+
+#wrapper {
+  width: 80%;
+  min-width: 960px;
+
+}
+
+h1 {background-color: #000033;
+color: white;
+font-family: Georgia, "Times New Roman", serif;
+}
+
+h2 {
+font-family: Georgia, "Times New Roman", serif;
+color: #3399CC;
+
+}
+
+#nav {
+  background-color: SkyBlue;
+
+}
+
+#content {
+background-color: White;
+
+}
+
+#address {font-size: 90%}
+
+#footer {font-size: 75%;
+font-style: italic;
+}
+
+#nav ul {
+  list-style-type: none;
+  font-size: 1.2em;
+  margin: 0;
+  padding-left: 0;
+}
+
+a:link {text-decoration: none;
+  color: #000033;
+
+}
+a:visited {color: #344873;
+}
+
+a:hover {color: White;
+}
