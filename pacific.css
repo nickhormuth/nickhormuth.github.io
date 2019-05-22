@@ -1,55 +1,137 @@
 body {
-  color: dark-grey;
-  background: linear-gradient(#E7D87F,#E2BD7F);
-  font-family: 'Roboto', Helvetica, sans-serif;
+  background-color: white;
+  color: darkgrey;
+  background-image: url("hwproject/background.jpg");
+  font-family: 'Roboto', Helvetica, sans-serif; */
+}
+
+a:link {
+  text-decoration: none;
+  color: #000033;}
+
+a:visited {
+  color: #344873;
+}
+
+a:hover {
+  color: White;
+}
+
+h1 {
+  color: white;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+h2 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #3399CC;
+  padding-left: 10px;
+  text-shadow: 1px 1px 1.5px #000000;
+}
+
+h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  color: #000033;
+}
+
+form {
+  padding: 20px;
+}
+
+@keyframes animation{
+  0% {
+left: 0;
+}
+100% {
+left: 90%;
+}
+}
+
+#animation {
+  position: relative;
+    width: 80px;
+    height: 80px;
+    margin: auto;
+    animation: animation;
+    animation-fill-mode: forwards;
+  animation-duration: 4s;
+  animation-iteration-count: 1;
+
 }
 
 #wrapper {
   width: 80%;
   min-width: 960px;
-
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  box-shadow: 10px 10px 5px grey;
 }
 
-h1 {background-color: #000033;
-color: white;
-font-family: Georgia, "Times New Roman", serif;
-}
-
-h2 {
-font-family: Georgia, "Times New Roman", serif;
-color: #3399CC;
-
+#header {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+  margin-top: auto;
+  margin-bottom: auto;
+  background: #000033;
+  background-image: url("hwproject/sunset.jpg");
+  background-position: right;
+  background-repeat: no-repeat;
+  padding-left: 10px;
+  height: 72px;
 }
 
 #nav {
-  background-color: SkyBlue;
-
+  grid-column: 1 / 2;
+  grid-row: 2 / 5;
+  background-color: skyblue;
+  padding: 10px 10px 0px 10px;
+  width: 175px;
+  font-weight: bold;
 }
 
-#content {
-background-color: White;
 
-}
 
-#address {font-size: 90%}
 
-#footer {font-size: 75%;
-font-style: italic;
-}
+  #content {
+      grid-column: 2 / 3;
+      grid-row: 2 / 3;
+      background-color: white;
+    }
 
-#nav ul {
-  list-style-type: none;
-  font-size: 1.2em;
-  margin: 0;
-  padding-left: 0;
-}
+    #content-image {
+    float: left;
+    width: 25%;
+        }
 
-a:link {text-decoration: none;
-  color: #000033;
+    #content-text {
+        display: inline-block;
+        width: 70%;
+        margin-left:10px;
+        margin-top: -20px;
 
-}
-a:visited {color: #344873;
-}
+      }
 
-a:hover {color: White;
-}
+  #contact {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        font-size: 90%;
+        margin-left: 10px;
+      }
+
+  #footer{
+    grid-column: 2 / 3;
+    grid-row: 4 / 5;
+    font-size: 75%;
+    font-style: italic;
+    margin-left: 10px;
+  }
+
+
+  #nav ul {
+      list-style-type: none;
+      font-size: 1.2em;
+      margin: 0;
+      padding-left: 0;
