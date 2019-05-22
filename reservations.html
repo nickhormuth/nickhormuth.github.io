@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Rervations at Pacific Trails Resort</title>
+  <link rel="stylesheet" href="pacific.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+  <link rel='shortcut icon' href='favicon.ico' type='image/x-icon' />
+</head>
+
+<body>
+  <div id="wrapper">
+    <div id="header">
+      <h1>Pacific Trails Resort</h1>
+    </div>
+    <div id="nav">
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="yurts.html">Yurts</a></li>
+        <li><a href="activities.html">Activities</a></li>
+        <li><a href="reservations.html">Reservations</a></li>
+      </ul>
+    </div>
+    <div id="content">
+      <h2>Make a Reservation</h2>
+      <form action="contact.php" method="post">
+        First Name:<br>
+        <input type="text" name="firstname"><br>
+        Last name:<br>
+        <input type="text" name="lastname"><br>
+        Email:<br>
+        <input type="email" name="user_mail"><br>
+        Phone Number:<br>
+        <input type="tel" name="phone"><br>
+        Number of Guests:<br>
+        <input type="number" name="guests"><br>
+        Comments / Message:<br>
+        <textarea name="user_message"></textarea><br>
+
+        <div id="button">
+          <button type="submit">Send your message</button>&nbsp;
+          <button type="reset">Reset</button>
+        </div>
+      </form>
+    </div>
+    <div id="footer">
+      <p>Copyright &copy; 2011 Pacific Trails Resort<br>
+        <em>Nick Hormuth</em></p>
+    </div>
+  </div>
+</body>
+
+</html>
