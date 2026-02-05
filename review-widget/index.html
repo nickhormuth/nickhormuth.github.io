@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Widget - Multi-Platform Review Aggregator</title>
+  <link rel="stylesheet" href="review-widget.css">
+  <style>
+    /* Demo page styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .demo-header {
+      text-align: center;
+      color: white;
+      margin-bottom: 40px;
+    }
+
+    .demo-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .demo-header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .demo-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    #review-widget-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .demo-section {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      margin-top: 40px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .demo-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #1e293b;
+    }
+
+    .demo-section h3 {
+      font-size: 1.1rem;
+      margin: 20px 0 10px;
+      color: #475569;
+    }
+
+    pre {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .feature-card {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .feature-card h4 {
+      color: #1e293b;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feature-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .feature-icon {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .config-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    .config-table th,
+    .config-table td {
+      text-align: left;
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .config-table th {
+      background: #f8fafc;
+      color: #475569;
+      font-weight: 600;
+    }
+
+    .config-table code {
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      color: #7c3aed;
+    }
+
+    @media (max-width: 768px) {
+      .demo-header h1 {
+        font-size: 1.75rem;
+      }
+
+      body {
+        padding: 20px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <header class="demo-header">
+      <h1>Review Widget</h1>
+      <p>Multi-Platform Review Aggregator for Google, Airbnb, TripAdvisor, Yelp & Facebook</p>
+    </header>
+
+    <!-- Widget Container -->
+    <div id="review-widget-container"></div>
+
+    <!-- Documentation -->
+    <section class="demo-section">
+      <h2>Features</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>
+            <span class="feature-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            </span>
+            Multi-Platform Support
+          </h4>
+          <p>Aggregate reviews from Google, Airbnb, TripAdvisor, Yelp, and Facebook in one place.</p>
+        </div>
+        <div class="feature-card">
+          <h4>
+            <span class="feature-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </span>
+            Multiple Layouts
+          </h4>
+          <p>Choose from Grid, Carousel, Masonry, or List layouts to match your website design.</p>
+        </div>
+        <div class="feature-card">
+          <h4>
+            <span class="feature-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            </span>
+            Fully Customizable
+          </h4>
+          <p>Customize colors, fonts, spacing, and more with CSS variables or configuration options.</p>
+        </div>
+        <div class="feature-card">
+          <h4>
+            <span class="feature-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </span>
+            AI Summary
+          </h4>
+          <p>Automatically generate intelligent summaries of all your reviews for quick insights.</p>
+        </div>
+        <div class="feature-card">
+          <h4>
+            <span class="feature-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/></svg>
+            </span>
+            Smart Filtering
+          </h4>
+          <p>Filter reviews by platform, rating, or show only 5-star reviews to highlight the best feedback.</p>
+        </div>
+        <div class="feature-card">
+          <h4>
+            <span class="feature-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </span>
+            Image Support
+          </h4>
+          <p>Display review images with a built-in lightbox for full-size viewing.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-section">
+      <h2>Quick Start</h2>
+      <h3>1. Include the files</h3>
+      <pre><code>&lt;link rel="stylesheet" href="review-widget.css"&gt;
+&lt;script src="review-widget.js"&gt;&lt;/script&gt;</code></pre>
+
+      <h3>2. Create a container</h3>
+      <pre><code>&lt;div id="review-widget-container"&gt;&lt;/div&gt;</code></pre>
+
+      <h3>3. Initialize the widget</h3>
+      <pre><code>const reviews = [
+  {
+    name: "John Smith",
+    avatar: "https://example.com/avatar.jpg", // optional
+    rating: 5,
+    text: "Amazing experience! Would definitely recommend.",
+    date: "2025-01-15",
+    platform: "google", // google, airbnb, tripadvisor, yelp, facebook
+    verified: true,
+    images: ["https://example.com/photo1.jpg"] // optional
+  },
+  // ... more reviews
+];
+
+const widget = new ReviewWidget('#review-widget-container', reviews, {
+  layout: 'grid',           // 'grid', 'carousel', 'masonry', 'list'
+  theme: 'light',           // 'light', 'dark'
+  snippetLength: 150,       // characters before truncation
+  showAiSummary: true,      // show AI-generated summary
+  showImages: true,         // show review images
+  minRating: 1,             // minimum stars (set to 5 for 5-star only)
+  platforms: ['google', 'airbnb', 'tripadvisor', 'yelp', 'facebook']
+});</code></pre>
+    </section>
+
+    <section class="demo-section">
+      <h2>Configuration Options</h2>
+      <table class="config-table">
+        <thead>
+          <tr>
+            <th>Option</th>
+            <th>Type</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>layout</code></td>
+            <td>string</td>
+            <td><code>'grid'</code></td>
+            <td>Layout style: 'grid', 'carousel', 'masonry', 'list'</td>
+          </tr>
+          <tr>
+            <td><code>theme</code></td>
+            <td>string</td>
+            <td><code>'light'</code></td>
+            <td>Color theme: 'light' or 'dark'</td>
+          </tr>
+          <tr>
+            <td><code>reviewsPerPage</code></td>
+            <td>number</td>
+            <td><code>6</code></td>
+            <td>Number of reviews to show per page</td>
+          </tr>
+          <tr>
+            <td><code>snippetLength</code></td>
+            <td>number</td>
+            <td><code>150</code></td>
+            <td>Maximum characters before truncation</td>
+          </tr>
+          <tr>
+            <td><code>showAiSummary</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show AI-generated review summary</td>
+          </tr>
+          <tr>
+            <td><code>showStats</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show rating statistics</td>
+          </tr>
+          <tr>
+            <td><code>showFilters</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show platform and rating filters</td>
+          </tr>
+          <tr>
+            <td><code>showImages</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show review images</td>
+          </tr>
+          <tr>
+            <td><code>showAvatars</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show reviewer avatars</td>
+          </tr>
+          <tr>
+            <td><code>showDates</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show review dates</td>
+          </tr>
+          <tr>
+            <td><code>showPlatformBadge</code></td>
+            <td>boolean</td>
+            <td><code>true</code></td>
+            <td>Show platform icon/badge</td>
+          </tr>
+          <tr>
+            <td><code>minRating</code></td>
+            <td>number</td>
+            <td><code>1</code></td>
+            <td>Minimum rating to display (1-5). Set to 5 for 5-star only.</td>
+          </tr>
+          <tr>
+            <td><code>platforms</code></td>
+            <td>array</td>
+            <td><code>['google', ...]</code></td>
+            <td>Platforms to include in display</td>
+          </tr>
+          <tr>
+            <td><code>autoplay</code></td>
+            <td>boolean</td>
+            <td><code>false</code></td>
+            <td>Auto-rotate carousel</td>
+          </tr>
+          <tr>
+            <td><code>autoplaySpeed</code></td>
+            <td>number</td>
+            <td><code>5000</code></td>
+            <td>Carousel autoplay interval (ms)</td>
+          </tr>
+          <tr>
+            <td><code>primaryColor</code></td>
+            <td>string</td>
+            <td><code>null</code></td>
+            <td>Custom primary color (e.g., '#ff5a5f')</td>
+          </tr>
+          <tr>
+            <td><code>aiSummaryText</code></td>
+            <td>string</td>
+            <td><code>null</code></td>
+            <td>Custom AI summary text (overrides auto-generated)</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="demo-section">
+      <h2>Styling with CSS Variables</h2>
+      <pre><code>/* Override default styles */
+:root {
+  --rw-primary-color: #ff5a5f;      /* Primary accent color */
+  --rw-background: #ffffff;          /* Widget background */
+  --rw-card-background: #ffffff;     /* Review card background */
+  --rw-text-primary: #1e293b;        /* Primary text color */
+  --rw-text-secondary: #64748b;      /* Secondary text color */
+  --rw-border-color: #e2e8f0;        /* Border color */
+  --rw-star-filled: #fbbf24;         /* Filled star color */
+  --rw-star-empty: #e2e8f0;          /* Empty star color */
+  --rw-radius-lg: 0.75rem;           /* Border radius */
+  --rw-font-family: 'Your Font', sans-serif;
+}</code></pre>
+    </section>
+
+    <section class="demo-section">
+      <h2>API Methods</h2>
+      <pre><code>// Update reviews dynamically
+widget.setReviews(newReviews);
+
+// Add a single review
+widget.addReview({
+  name: "New Reviewer",
+  rating: 5,
+  text: "Just added!",
+  platform: "google",
+  date: new Date().toISOString()
+});
+
+// Update configuration
+widget.setConfig({
+  layout: 'carousel',
+  minRating: 4
+});
+
+// Get current config
+const config = widget.getConfig();
+
+// Get filtered reviews
+const filtered = widget.getFilteredReviews();
+
+// Destroy widget
+widget.destroy();</code></pre>
+    </section>
+
+    <section class="demo-section">
+      <h2>Event Callbacks</h2>
+      <pre><code>const widget = new ReviewWidget('#container', reviews, {
+  onReviewClick: (review, index) => {
+    console.log('Review clicked:', review);
+  },
+  onLoadMore: (page) => {
+    console.log('Loading page:', page);
+    // Fetch more reviews from API
+  },
+  onFilterChange: (filters) => {
+    console.log('Filters changed:', filters);
+  }
+});</code></pre>
+    </section>
+  </div>
+
+  <script src="review-widget.js"></script>
+  <script>
+    // Sample review data
+    const sampleReviews = [
+      {
+        name: "Sarah Johnson",
+        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "Absolutely incredible experience! The attention to detail was remarkable and the staff went above and beyond to make our stay memorable. The location was perfect, right in the heart of everything we wanted to see. Would highly recommend to anyone looking for a top-notch experience.",
+        date: "2025-01-28",
+        platform: "google",
+        verified: true,
+        images: [
+          "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400",
+          "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=400"
+        ]
+      },
+      {
+        name: "Michael Chen",
+        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "This was hands down the best experience I've had. Everything from booking to checkout was seamless. The amenities exceeded my expectations and the views were breathtaking. Can't wait to come back!",
+        date: "2025-01-25",
+        platform: "airbnb",
+        verified: true
+      },
+      {
+        name: "Emily Rodriguez",
+        avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
+        rating: 4,
+        text: "Great overall experience. The location was fantastic and the room was clean and comfortable. Only minor issue was the check-in process took a bit longer than expected, but the staff was very apologetic and helpful.",
+        date: "2025-01-22",
+        platform: "tripadvisor",
+        verified: true
+      },
+      {
+        name: "David Kim",
+        avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "Perfect in every way! The team really knows how to create an exceptional experience. From the moment we arrived, we felt welcomed and valued. The food was delicious, the service impeccable.",
+        date: "2025-01-20",
+        platform: "yelp",
+        verified: true,
+        images: [
+          "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400"
+        ]
+      },
+      {
+        name: "Jessica Martinez",
+        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "I've been to many similar places, but this one stands out. The quality is unmatched and the price is very reasonable for what you get. Highly recommend!",
+        date: "2025-01-18",
+        platform: "facebook",
+        verified: true
+      },
+      {
+        name: "Robert Taylor",
+        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+        rating: 4,
+        text: "Very good experience overall. The facilities were modern and well-maintained. Staff was friendly and accommodating. Would definitely visit again.",
+        date: "2025-01-15",
+        platform: "google",
+        verified: false
+      },
+      {
+        name: "Amanda Foster",
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "Exceeded all expectations! We celebrated our anniversary here and they made it so special with complimentary upgrades and personalized touches. Truly a memorable experience.",
+        date: "2025-01-12",
+        platform: "airbnb",
+        verified: true
+      },
+      {
+        name: "James Wilson",
+        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "Outstanding service from start to finish. The team was professional, knowledgeable, and genuinely cared about our experience. This is how hospitality should be done!",
+        date: "2025-01-10",
+        platform: "tripadvisor",
+        verified: true
+      },
+      {
+        name: "Lisa Anderson",
+        rating: 4,
+        text: "Really enjoyed our time here. The atmosphere was lovely and relaxing. Great value for money. Will definitely be recommending to friends and family.",
+        date: "2025-01-08",
+        platform: "yelp",
+        verified: true
+      },
+      {
+        name: "Christopher Lee",
+        avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "Wow! Just wow! This place is a hidden gem. Everything was perfect - the location, the service, the quality. Don't hesitate, book now!",
+        date: "2025-01-05",
+        platform: "facebook",
+        verified: true
+      },
+      {
+        name: "Nicole Brown",
+        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop",
+        rating: 5,
+        text: "Five stars isn't enough! The experience was magical from beginning to end. The attention to detail was impressive and nothing was too much trouble for the wonderful staff.",
+        date: "2025-01-02",
+        platform: "google",
+        verified: true,
+        images: [
+          "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400",
+          "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400",
+          "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?w=400"
+        ]
+      },
+      {
+        name: "Thomas Wright",
+        rating: 3,
+        text: "Decent experience but had some issues with the booking system. Once we got everything sorted, the actual service was good. Room for improvement on the tech side.",
+        date: "2024-12-28",
+        platform: "tripadvisor",
+        verified: false
+      }
+    ];
+
+    // Initialize the widget
+    const widget = new ReviewWidget('#review-widget-container', sampleReviews, {
+      layout: 'grid',
+      theme: 'light',
+      reviewsPerPage: 6,
+      snippetLength: 180,
+      showAiSummary: true,
+      showStats: true,
+      showFilters: true,
+      showImages: true,
+      showAvatars: true,
+      showDates: true,
+      showPlatformBadge: true,
+      showVerifiedBadge: true,
+      minRating: 1,
+      platforms: ['google', 'airbnb', 'tripadvisor', 'yelp', 'facebook'],
+      onReviewClick: (review, index) => {
+        console.log('Review clicked:', review.name);
+      },
+      onFilterChange: (filters) => {
+        console.log('Filters changed:', filters);
+      }
+    });
+  </script>
+</body>
+</html>
