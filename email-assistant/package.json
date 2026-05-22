@@ -1,0 +1,30 @@
+{
+  "name": "email-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Inbox Copilot v2 — batched briefs + fast-lane tour-inquiry handling for the business Gmail account.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "brief": "node --loader tsx src/jobs/brief-run.ts",
+    "fast-lane": "node --loader tsx src/jobs/fast-lane.ts",
+    "auth:spike": "tsx src/google/auth.ts",
+    "draft:spike": "tsx src/spikes/draft-threading.ts",
+    "calendar:spike": "tsx src/spikes/calendar-holds.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.65.0",
+    "@google-cloud/firestore": "^7.11.0",
+    "@google-cloud/secret-manager": "^5.6.0",
+    "googleapis": "^144.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "@types/node": "^22.0.0"
+  }
+}
