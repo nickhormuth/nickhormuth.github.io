@@ -17,6 +17,9 @@ import { pushNtfy } from "../notify/ntfy.js";
 import { LABEL_FOR } from "../config/categories.js";
 import { getCursor, setCursor, newSinceQuery } from "../store/cursor.js";
 import { claim } from "../store/idempotency.js";
+import { driveClient } from "../google/drive.js";
+import { sheetsClient } from "../google/sheets.js";
+import { recordReceipt } from "../flows/receipt.js";
 
 function threadLink(threadId: string): string {
   return `https://mail.google.com/mail/u/0/#inbox/${threadId}`;
@@ -47,6 +50,10 @@ async function main() {
 
   const auth = authedClient();
   const gmail = gmailClient(auth);
+  const drive = driveClient(auth);
+  const sheets = sheetsClient(auth);
+  const receiptSheetId = process.env.RECEIPT_SHEET_ID;
+  const receiptDriveFolder = process.env.RECEIPT_DRIVE_FOLDER_ID;
 
   const cursor = await getCursor();
   const query = newSinceQuery(cursor, "in:inbox");
@@ -119,6 +126,20 @@ async function main() {
           bodyText,
         });
         item.draftLink = draftLink(draft.draftId);
+      }
+
+      // Receipts: if a sheet is configured, extract + record. Failure is non-fatal (we still
+      // file the message under filed/).
+      if (triage.category === "receipt" && receiptSheetId) {
+        try {
+          await recordReceipt(gmail, drive, sheets, {
+            messageId: id,
+            sheetId: receiptSheetId,
+            driveFolderId: receiptDriveFolder,
+          });
+        } catch (e) {
+          console.warn(`receipt: failed for ${id}`, e);
+        }
       }
 
       // Apply the label only after the (possibly LLM) work above succeeded.

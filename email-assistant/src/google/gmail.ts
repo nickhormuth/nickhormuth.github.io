@@ -51,7 +51,7 @@ export function parseAddress(raw: string | undefined): { name?: string; email: s
   const m = raw.match(/^\s*"?([^"<]*?)"?\s*<\s*([^>\s]+@[^>\s]+)\s*>\s*$/);
   if (m && m[2]) {
     const name = m[1]?.trim();
-    return { name: name || undefined, email: m[2].trim() };
+    return name ? { name, email: m[2].trim() } : { email: m[2].trim() };
   }
   const bare = raw.match(/[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}/);
   if (bare) return { email: bare[0] };

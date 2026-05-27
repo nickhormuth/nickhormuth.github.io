@@ -68,13 +68,14 @@ deploy_job() {
     --region "$REGION" \
     --service-account "$SA" \
     --args="$args" \
-    --set-env-vars "GCP_PROJECT_ID=${PROJECT_ID},BUSINESS_EMAIL=${BUSINESS_EMAIL:?set BUSINESS_EMAIL},BUSINESS_CALENDAR_ID=${BUSINESS_CALENDAR_ID:-primary},OWNER_NAME=${OWNER_NAME:-},BRIEF_TO=${BRIEF_TO:?set BRIEF_TO}" \
+    --set-env-vars "GCP_PROJECT_ID=${PROJECT_ID},BUSINESS_EMAIL=${BUSINESS_EMAIL:?set BUSINESS_EMAIL},BUSINESS_CALENDAR_ID=${BUSINESS_CALENDAR_ID:-primary},OWNER_NAME=${OWNER_NAME:-},BRIEF_TO=${BRIEF_TO:?set BRIEF_TO},RECEIPT_SHEET_ID=${RECEIPT_SHEET_ID:-},RECEIPT_DRIVE_FOLDER_ID=${RECEIPT_DRIVE_FOLDER_ID:-}" \
     --set-secrets "GOOGLE_CLIENT_ID=GOOGLE_CLIENT_ID:latest,GOOGLE_CLIENT_SECRET=GOOGLE_CLIENT_SECRET:latest,GOOGLE_REFRESH_TOKEN=GOOGLE_REFRESH_TOKEN:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest,NTFY_TOPIC=NTFY_TOPIC:latest"
 }
 
-deploy_job brief-run     "src/jobs/brief-run.ts"
-deploy_job fast-lane     "src/jobs/fast-lane.ts"
-deploy_job sweep-holds   "src/jobs/sweep-holds.ts"
+deploy_job brief-run       "src/jobs/brief-run.ts"
+deploy_job fast-lane       "src/jobs/fast-lane.ts"
+deploy_job sweep-holds     "src/jobs/sweep-holds.ts"
+deploy_job weekly-cleanup  "src/jobs/weekly-cleanup.ts"
 
 # --- Cloud Scheduler ---------------------------------------------------------
 # Pass a SLOT_NAME via the job's overrides so brief-run can label the digest in subject lines.
@@ -120,6 +121,9 @@ schedule fast-lane "*/5 * * * *" fast-lane
 
 # sweep stale holds hourly
 schedule sweep-holds "0 * * * *" sweep-holds
+
+# weekly cleanup — Sunday 21:00 local
+schedule weekly-cleanup "0 21 * * 0" weekly-cleanup
 
 echo
 echo "Deployed. Manually trigger any job with: gcloud run jobs execute <name> --region $REGION"

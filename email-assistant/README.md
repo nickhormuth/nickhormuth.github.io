@@ -22,18 +22,19 @@ infra/         deploy.sh (gcloud + Cloud Run Jobs + Scheduler), schema.firestore
 Dockerfile     node:22-slim → npx tsx (entrypoint takes a job path)
 ```
 
-## Phase 0 — de-risk before any feature run
+## Get started
 
-1. `cp .env.example .env` and fill `GOOGLE_CLIENT_ID/SECRET`, `BUSINESS_EMAIL`.
-2. `npm install`
-3. `npm run auth:spike` → consent screen → captures the refresh token. Confirm the OAuth app
-   is **"In production"** so the token survives past 7 days.
-4. `npm run draft:spike -- <gmail-message-id>` → confirm a reply threads correctly on web +
-   mobile (the most common silent failure here).
-5. `npm run calendar:spike` → places 3 tentative holds; then `… confirm <eventId> <other1>
-   <other2>` to confirm one; then `… sweep` to clear.
+See **`ONBOARDING.md`** for the full 10-minute setup. Short version:
 
-Only after all three pass does Phase 1 (the brief) run for real mail.
+1. Create a GCP project, enable Gmail/Calendar/Sheets/Drive APIs, set the OAuth consent
+   screen to **In production**, create an OAuth Web client with redirect
+   `http://localhost:8080/oauth2callback`.
+2. `cp .env.example .env` and fill the values.
+3. `npm install && npm test` — 15 unit tests for threading + timezone correctness.
+4. `npm run auth:spike` → consent → paste the refresh token back into `.env`.
+5. `npm run preflight` — validates env + OAuth + Gmail + Calendar + Anthropic + Firestore.
+6. Phase 0 spikes: `npm run draft:spike -- <message-id>` and `npm run calendar:spike`.
+7. `bash infra/deploy.sh` to ship.
 
 ## Run locally
 
