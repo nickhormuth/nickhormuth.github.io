@@ -31,8 +31,28 @@ export async function freeBusy(
   return busy.map((b) => ({ start: b.start!, end: b.end! }));
 }
 
-// Propose N candidate slots, each `durationMin` long, within business hours, that don't
-// collide with busy. Skips weekends unless allowWeekends.
+// Propose N candidate slots, each `durationMin` long, within business hours in the GIVEN
+// timezone (not the server's). Cloud Run is UTC — using server-local hours would propose 2 AM
+// slots. We resolve hours/weekday via Intl in `timeZone`.
+const WEEKDAY_INDEX: Record<string, number> = {
+  Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6,
+};
+
+function localParts(d: Date, timeZone: string): { hour: number; weekday: number } {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    weekday: "short",
+    hour: "numeric",
+    hour12: false,
+  }).formatToParts(d);
+  const hourStr = parts.find((p) => p.type === "hour")?.value ?? "0";
+  const weekdayStr = parts.find((p) => p.type === "weekday")?.value ?? "Mon";
+  // Intl returns "24" for midnight in some locales; normalize.
+  const hour = (parseInt(hourStr, 10) || 0) % 24;
+  const weekday = WEEKDAY_INDEX[weekdayStr] ?? 1;
+  return { hour, weekday };
+}
+
 export function proposeSlots(
   busy: BusySlot[],
   opts: {
@@ -42,7 +62,7 @@ export function proposeSlots(
     count: number;
     businessStartHourLocal: number; // e.g. 9
     businessEndHourLocal: number; // e.g. 17
-    timeZone: string; // for hour interpretation; uses local-time approximation
+    timeZone: string; // business timezone — slots are evaluated here, not server-local
     allowWeekends?: boolean;
   },
 ): BusySlot[] {
@@ -58,17 +78,14 @@ export function proposeSlots(
 
   for (let t = opts.from.getTime(); t + durMs <= opts.to.getTime() && out.length < opts.count; t += stepMs) {
     const start = new Date(t);
-    const end = new Date(t + durMs);
-    // crude business-hour check (server local; refine with Intl in v1.1)
-    const hr = start.getHours();
-    const day = start.getDay();
-    if (!opts.allowWeekends && (day === 0 || day === 6)) continue;
-    if (hr < opts.businessStartHourLocal || hr >= opts.businessEndHourLocal) continue;
-    if (collidesWithBusy(start.getTime(), end.getTime())) continue;
+    const { hour, weekday } = localParts(start, opts.timeZone);
+    if (!opts.allowWeekends && (weekday === 0 || weekday === 6)) continue;
+    if (hour < opts.businessStartHourLocal || hour >= opts.businessEndHourLocal) continue;
+    if (collidesWithBusy(start.getTime(), start.getTime() + durMs)) continue;
     // Space proposed slots at least 2h apart from each other for guest choice
     if (out.some((p) => Math.abs(new Date(p.start).getTime() - start.getTime()) < 2 * 60 * 60_000))
       continue;
-    out.push({ start: start.toISOString(), end: end.toISOString() });
+    out.push({ start: start.toISOString(), end: new Date(t + durMs).toISOString() });
   }
   return out;
 }

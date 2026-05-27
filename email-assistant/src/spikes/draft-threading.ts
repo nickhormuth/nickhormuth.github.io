@@ -12,6 +12,7 @@ import {
   getMessage,
   headerOf,
   createDraftReply,
+  parseAddress,
 } from "../google/gmail.js";
 
 async function main() {
@@ -31,13 +32,15 @@ async function main() {
   const messageIdHeader = headerOf(msg, "Message-ID") ?? headerOf(msg, "Message-Id") ?? "";
   const refsHeader = headerOf(msg, "References") ?? "";
 
+  const to = parseAddress(from);
+  if (!to) throw new Error(`Could not parse From header: ${from}`);
   const draft = await createDraftReply(gmail, {
     threadId: msg.threadId!,
-    to: from,
+    to,
     subject,
     inReplyTo: messageIdHeader,
     references: refsHeader,
-    fromAddress: ownerEmail,
+    from: { email: ownerEmail },
     bodyText:
       "This is a Phase 0 threading spike from inbox-copilot. If you're reading this inline in the original thread on both Gmail web AND the Gmail mobile app, the spike PASSES. Delete this draft when done.",
   });

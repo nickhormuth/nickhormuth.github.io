@@ -9,7 +9,9 @@ async function main() {
   const auth = authedClient();
   const cal = calendarClient(auth);
 
-  // Sweep 1: any Firestore-tracked pending hold past TTL → mark expired and delete all 3 events.
+  // Sweep 1: any Firestore-tracked pending hold past TTL → delete all 3 events, then mark
+  // expired. Mark per-hold immediately so a crash mid-loop doesn't leave Firestore lying
+  // about state (red-team fix #1H).
   const cutoff = new Date(Date.now() - HOLD_TTL_HOURS * 60 * 60_000);
   const pending = await listPendingHolds();
   let removed = 0;
@@ -23,7 +25,11 @@ async function main() {
         console.warn(`sweep: failed to delete ${eventId}`, e);
       }
     }
-    await markHold(hold.inquiryThreadId, { status: "expired" });
+    try {
+      await markHold(hold.inquiryThreadId, { status: "expired" });
+    } catch (e) {
+      console.warn(`sweep: failed to mark expired ${hold.inquiryThreadId}`, e);
+    }
   }
 
   // Sweep 2: belt-and-suspenders — any tentative event we created that's older than TTL but

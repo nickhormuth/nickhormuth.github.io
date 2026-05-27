@@ -5,6 +5,7 @@ import {
   headerOf,
   plainTextBody,
   addLabel,
+  parseAddress,
 } from "../google/gmail.js";
 import {
   freeBusy,
@@ -29,13 +30,6 @@ export interface TourInquiryInput {
   ntfyTopic?: string;
 }
 
-function parseFromHeader(s?: string): { name?: string; email: string } {
-  if (!s) return { email: "" };
-  const match = s.match(/^\s*"?([^"<]+?)"?\s*<([^>]+)>\s*$/);
-  if (match && match[1] && match[2]) return { name: match[1].trim(), email: match[2].trim() };
-  return { email: s.trim() };
-}
-
 export async function handleTourInquiry(input: TourInquiryInput): Promise<HoldRecord | null> {
   const { gmail, cal, messageId } = input;
   const msg = await getMessage(gmail, messageId);
@@ -44,8 +38,8 @@ export async function handleTourInquiry(input: TourInquiryInput): Promise<HoldRe
   const subject = headerOf(msg, "Subject") ?? "(no subject)";
   const messageIdHeader = headerOf(msg, "Message-ID") ?? headerOf(msg, "Message-Id") ?? "";
   const refsHeader = headerOf(msg, "References") ?? "";
-  const inquirer = parseFromHeader(fromHeader);
-  if (!inquirer.email) return null;
+  const inquirer = parseAddress(fromHeader);
+  if (!inquirer) return null;
 
   // Find 3 candidate slots in the next 7 business days, 30-min each.
   const now = new Date();
@@ -61,7 +55,35 @@ export async function handleTourInquiry(input: TourInquiryInput): Promise<HoldRe
     timeZone: input.timeZone,
   });
   if (slots.length < 3) {
-    // Not enough availability — still draft a reply asking what works for them.
+    // Not enough business-hour availability in the horizon. Draft a fallback reply asking
+    // for their preferred dates rather than dropping the inquiry silently.
+    const fallback = await draftReply({
+      fromName: input.ownerName,
+      recipientName: inquirer.name,
+      recipientEmail: inquirer.email,
+      subject,
+      threadText: plainTextBody(msg).slice(0, 4000),
+      extraInstructions:
+        "This is a tour inquiry but our calendar is full for the next two weeks. Acknowledge warmly, say we'd love to host them, and ask what dates / weeks they're considering so we can find a good time. Brief and friendly.",
+    });
+    await createDraftReply(gmail, {
+      threadId,
+      to: inquirer,
+      subject,
+      inReplyTo: messageIdHeader,
+      references: refsHeader,
+      from: { name: input.ownerName, email: input.ownerEmail },
+      bodyText: fallback,
+    });
+    await addLabel(gmail, messageId, LABEL_FOR.tour_inquiry);
+    if (input.ntfyTopic) {
+      await pushNtfy({
+        topic: input.ntfyTopic,
+        title: "🎫 Tour inquiry — draft ready (no slots)",
+        message: `From ${inquirer.name ?? inquirer.email}\n${subject}\nCalendar full for 2wk; asked for their dates.`,
+        priority: 4,
+      });
+    }
     return null;
   }
 
@@ -107,11 +129,11 @@ If none of these work, invite them to share alternatives.`,
 
   await createDraftReply(gmail, {
     threadId,
-    to: fromHeader ?? inquirer.email,
+    to: inquirer,
     subject,
     inReplyTo: messageIdHeader,
     references: refsHeader,
-    fromAddress: `${input.ownerName} <${input.ownerEmail}>`,
+    from: { name: input.ownerName, email: input.ownerEmail },
     bodyText,
   });
 

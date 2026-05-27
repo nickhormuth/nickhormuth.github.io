@@ -18,9 +18,10 @@ export async function setCursor(cursor: Cursor, account = "business"): Promise<v
 // Build a Gmail query that fetches all mail since lastRunAt - slack. Date-bounded so an
 // expired historyId never silently misses mail (red-team fix #5).
 export function newSinceQuery(cursor: Cursor | null, baseQuery = ""): string {
-  // 6h slack so we always re-cover the previous run, then idempotency dedupes.
+  // 30-min slack so we always re-cover the previous run, then idempotency dedupes.
+  // (Bigger slack = re-fetching the same messages every run, which is wasted Gmail quota.)
   const since = cursor
-    ? Math.floor(new Date(cursor.lastRunAt).getTime() / 1000) - 6 * 60 * 60
+    ? Math.floor(new Date(cursor.lastRunAt).getTime() / 1000) - 30 * 60
     : Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const parts = [`after:${since}`];
   if (baseQuery) parts.push(`(${baseQuery})`);
