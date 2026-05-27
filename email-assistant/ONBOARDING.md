@@ -36,9 +36,13 @@ This is the step that prevents the 7-day refresh-token death. Do not skip it.
 3. App name: `Inbox Copilot`. User support email: your business email. Developer email: same.
 4. **Save and continue** through Scopes, Test users (no need to add any), Summary.
 5. Back on the OAuth consent screen page, click **Publish App** → confirm.
-   - Status should read **In production**. (For this app the scopes are non-sensitive enough
-     that Google won't require the full CASA verification process — single-user external apps
-     with the scopes we use are auto-approved.)
+   - Status should read **In production**. This is what stops the 7-day refresh-token death
+     in "testing" mode.
+   - Heads-up: Gmail and Drive are **sensitive scopes** under Google's OAuth policy. Your
+     own consent flow will still work fine, but the consent screen will show a *"Google hasn't
+     verified this app"* warning — click **Advanced → Go to Inbox Copilot (unsafe)** to
+     proceed. Verification (CASA) is only needed if you ever share the consent URL with
+     others; for a single-user self-consent it isn't required.
 
 ## 4. Create the OAuth client (1 min)
 

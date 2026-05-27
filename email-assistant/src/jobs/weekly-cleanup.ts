@@ -16,25 +16,18 @@ async function main() {
   const auth = authedClient();
   const gmail = gmailClient(auth);
 
-  // Rough heuristic for "high volume, never opened": senders with >=5 unread in last 30 days.
-  // (More accurate metrics — open rate, time-to-archive — require a label-scan we'll add in
-  // v1.1; this version is a useful first pass.)
+  // v1: total unread count in the last 30 days. v1.1 adds per-sender ranking + open-rate.
+  // (Per-sender requires a getMessage call per id to read From — too expensive for a weekly
+  // job at 500-msg scale without a metadata-only batch endpoint.)
   const ids = await listMessageIds(gmail, "in:inbox is:unread newer_than:30d", 500);
-  const senderCount = new Map<string, number>();
-  for (const id of ids) {
-    // We use metadata-only fetch via Gmail headers — but the list endpoint already gave us
-    // ids; we'd need to fetch each to read From, which is too many API calls for a weekly
-    // job. Skip per-id fetch and just report total unread count for now.
-    senderCount.set("__all__", (senderCount.get("__all__") ?? 0) + 1);
-  }
-  const total = senderCount.get("__all__") ?? 0;
-  const body = `Weekly cleanup:
+  const total = ids.length;
+  const body = `Weekly cleanup (v1 placeholder):
 
-Unread messages older than read mail and never opened in the last 30 days: ${total}
+Unread messages in your inbox from the last 30 days: ${total}
 
-This v1 cleanup is a placeholder summary. Full per-sender ranking ships in v1.1 once we track
-open/archive events. Until then, use Gmail's own "Unsubscribe" suggestion on individual
-senders, or reply to a brief with a sender domain to fire RFC 8058 one-click unsubscribe.`;
+This summary is intentionally simple in v1. v1.1 will rank by sender + flag high-volume
+never-opened senders for one-click RFC 8058 unsubscribe. Until then, use Gmail's own
+"Unsubscribe" suggestion on individual senders.`;
   await emailSelf(gmail, ownerEmail, briefTo, "Weekly inbox cleanup", body);
   console.log(`weekly-cleanup: ${total} unread items in last 30d`);
 }

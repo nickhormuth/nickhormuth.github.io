@@ -125,6 +125,22 @@ export async function recordReceipt(
     driveFolderId?: string;
   },
 ): Promise<{ ok: boolean; reason?: string; sheetRow?: (string | number | null)[] }> {
+  // Receipt-level idempotency lock: claim the messageId via a transactional create-if-absent
+  // before any side-effects. If we've ever recorded (or even attempted) this message, bail.
+  // This is belt-and-suspenders on top of the brief's own outer claim — guarantees we won't
+  // double-write a Sheet row even if the brief loop re-presents this message after a partial
+  // failure.
+  const ref = fsdb().collection(COLLECTIONS.receipts).doc(opts.messageId);
+  const claimed = await fsdb()
+    .runTransaction(async (tx) => {
+      const snap = await tx.get(ref);
+      if (snap.exists) return false;
+      tx.set(ref, { status: "pending", startedAt: new Date().toISOString() });
+      return true;
+    })
+    .catch(() => false);
+  if (!claimed) return { ok: false, reason: "already-recorded" };
+
   const { receipt, subject, from, messageId } = await extractReceipt(gmail, opts.messageId);
   if (!receipt) return { ok: false, reason: "extraction-failed" };
   if (receipt.confidence < 0.8) return { ok: false, reason: "low-confidence", sheetRow: undefined };
@@ -156,10 +172,10 @@ export async function recordReceipt(
     new Date().toISOString(),
   ];
   await appendRow(sheets, opts.sheetId, "Sheet1!A:K", row);
-  await fsdb()
-    .collection(COLLECTIONS.receipts)
-    .doc(messageId)
-    .set({ ...receipt, subject, from, driveLink, addedAt: new Date().toISOString() });
+  await ref.set(
+    { ...receipt, subject, from, driveLink, status: "done", addedAt: new Date().toISOString() },
+    { merge: true },
+  );
 
   return { ok: true, sheetRow: row };
 }

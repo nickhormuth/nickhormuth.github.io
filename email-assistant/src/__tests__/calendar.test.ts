@@ -81,8 +81,9 @@ test("proposeSlots avoids busy intervals", () => {
 });
 
 test("proposeSlots spaces results at least 2h apart", () => {
+  // 4-day window so 3 distinct slots are guaranteed available.
   const from = new Date("2026-06-01T15:00:00Z"); // Monday 08:00 LA
-  const to = new Date("2026-06-02T01:00:00Z"); // Monday 18:00 LA
+  const to = new Date("2026-06-05T00:00:00Z"); // Thursday 17:00 LA
   const slots = proposeSlots([], {
     from,
     to,
@@ -92,6 +93,7 @@ test("proposeSlots spaces results at least 2h apart", () => {
     businessEndHourLocal: 17,
     timeZone: "America/Los_Angeles",
   });
+  assert.equal(slots.length, 3, "must return 3 slots or the spacing assertion is vacuous");
   for (let i = 1; i < slots.length; i++) {
     const dt =
       new Date(slots[i]!.start).getTime() - new Date(slots[i - 1]!.start).getTime();

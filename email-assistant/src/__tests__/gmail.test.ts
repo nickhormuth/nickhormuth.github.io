@@ -76,6 +76,36 @@ test("buildRawReply RFC 2047 encodes non-ASCII display names", () => {
   assert.match(raw, /To: =\?UTF-8\?B\?[^?]+\?= <m@x\.com>/);
 });
 
+test("buildRawReply formats Cc with structured addresses", () => {
+  const raw = buildRawReply({
+    threadId: "t1",
+    to: { email: "g@x.com" },
+    cc: [
+      { name: "Smith, John", email: "j@x.com" },
+      { name: "Mëlanië", email: "m@x.com" },
+    ],
+    subject: "Hi",
+    inReplyTo: "<abc@x>",
+    references: "",
+    from: { email: "nick@example.com" },
+    bodyText: "hi",
+  });
+  assert.match(raw, /Cc: "Smith, John" <j@x\.com>, =\?UTF-8\?B\?[^?]+\?= <m@x\.com>/);
+});
+
+test("buildRawReply omits Cc header when none provided", () => {
+  const raw = buildRawReply({
+    threadId: "t1",
+    to: { email: "g@x.com" },
+    subject: "Hi",
+    inReplyTo: "<abc@x>",
+    references: "",
+    from: { email: "nick@example.com" },
+    bodyText: "hi",
+  });
+  assert.doesNotMatch(raw, /^Cc:/m);
+});
+
 test("buildRawReply quotes names with commas/angle brackets", () => {
   const raw = buildRawReply({
     threadId: "t1",
