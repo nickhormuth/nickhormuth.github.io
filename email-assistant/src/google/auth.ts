@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { google } from "googleapis";
+import type { OAuth2Client } from "google-auth-library";
 
 // Scopes for v1 (business account only). Keep minimal — fewer scopes = lighter OAuth review.
 export const SCOPES = [
@@ -9,7 +10,7 @@ export const SCOPES = [
   "https://www.googleapis.com/auth/drive.file", // only files this app creates (receipt PDFs)
 ];
 
-export function oauthClient() {
+export function oauthClient(): OAuth2Client {
   const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI } = process.env;
   if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
     throw new Error("Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET (see .env.example).");
@@ -19,6 +20,16 @@ export function oauthClient() {
     GOOGLE_CLIENT_SECRET,
     GOOGLE_REDIRECT_URI ?? "http://localhost:8080/oauth2callback",
   );
+}
+
+// Build an authenticated client from a stored refresh token. Use this everywhere except the
+// one-time consent flow.
+export function authedClient(): OAuth2Client {
+  const refresh = process.env.GOOGLE_REFRESH_TOKEN;
+  if (!refresh) throw new Error("GOOGLE_REFRESH_TOKEN not set — run `npm run auth:spike` first.");
+  const client = oauthClient();
+  client.setCredentials({ refresh_token: refresh });
+  return client;
 }
 
 // Phase 0 spike (a): run `npm run auth:spike`, click consent, capture a refresh token,
