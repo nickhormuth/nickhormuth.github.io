@@ -1,0 +1,25 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Generated contribution files (contain SSNs — must never be committed)
+out/
+*.csv
+*.xlsx
+!reference/*.xlsx
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
