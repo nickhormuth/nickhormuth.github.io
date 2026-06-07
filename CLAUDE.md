@@ -34,3 +34,36 @@ every pay period.
 
 **Open inputs needed:** Gusto dev app credentials; real CalSavers contribution
 template (.xlsx) for exact schema; pay-schedule cadence; repo location decision.
+
+---
+
+# Resume state (read this first if you're a new Claude session)
+
+Project lives in `calsavers/` as an installable Python package. **Everything
+needed to pick up is in this repo** — read these in order before doing anything:
+
+1. `calsavers/DESIGN.md` — architecture (Tier-3 ambition / Tier-1 floor)
+2. `calsavers/RED_TEAM_v0.1.md` — self red-team, 23 findings, **stand-in until Nick runs codex locally**
+3. `calsavers/RUNBOOK_GUSTO_DEV_APP.md` — Nick's click-by-click for Gusto credentials
+4. `calsavers/README.md` — laptop quick start
+
+**Last shipped:** runnable Python project, `make install / oauth / list-companies
+/ pull-recent / test / lint / redteam` all wired. Smoke tests green. CSV writer
+and submitter intentionally deferred.
+
+**Blocked on Nick (in priority order):**
+1. **Stage-0 phone call** — Vestwell client services (855-650-6916). Confirm
+   whether the existing Gusto-Vestwell 360° integration already auto-remits for
+   his CalSavers account. If yes → close the project.
+2. **CalSavers MFA type** — TOTP / SMS / push? Determines whether full Tier-3 is
+   even possible.
+3. **Drop the real contribution template** at `calsavers/reference/contribution_template.xlsx`.
+   Without it, CSV emission is speculative.
+4. **Gusto dev app credentials** — runbook in `calsavers/RUNBOOK_GUSTO_DEV_APP.md`.
+5. **Codex red-team** — `cd calsavers && make redteam`. Paste findings back.
+
+**Do NOT** silently re-design, expand scope, or add Tier-3 features until
+Stage-0 is resolved. The cheapest move is always: ask Nick the next blocking
+question.
+
+**Branch:** stay on `claude/calsavers-gusto-automation-sjk04` until merged.
